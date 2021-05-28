@@ -1,0 +1,9 @@
+#python
+/venv/
+*.egg-info
+__pycache__
+.pytest_cache
+
+#ignore test keystores
+keystore.jks
+keystore.properties
