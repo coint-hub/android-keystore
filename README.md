@@ -15,21 +15,11 @@ if (keystoreFile.exists() != keystorePropertiesFile.exists()) {
     }
 }
 
-String keystorePassword = null
-String debugPassword = null
 String releasePassword = null
 if (keystorePropertiesFile.exists()) {
     def keystoreProperties = new Properties()
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-    keystorePassword = keystoreProperties.getProperty('store')
-    if (keystorePassword == null) {
-        throw new GradleException("missing store password in keystore.properties")
-    }
-    debugPassword = keystoreProperties.getProperty('debug')
-    if (debugPassword == null) {
-        throw new GradleException("missing debug password in keystore.properties")
-    }
-    releasePassword = keystoreProperties.getProperty('release')
+    releasePassword = keystoreProperties.getProperty('key0')
     if (releasePassword == null) {
         throw new GradleException("missing release password in keystore.properties")
     }
@@ -39,19 +29,11 @@ android {
     ...
     // 서명 정보가 있을 경우 추가
     signingConfigs {
-        if (keystorePassword != null) {
-            debug {
-                storeFile keystoreFile
-                storePassword keystorePassword
-                keyAlias "debug"
-                keyPassword debugPassword
-                v1SigningEnabled true
-                v2SigningEnabled true
-            }
+        if (releasePassword != null) {
             release {
                 storeFile keystoreFile
-                storePassword keystorePassword
-                keyAlias "release"
+                storePassword releasePassword
+                keyAlias "key0"
                 keyPassword releasePassword
                 v1SigningEnabled true
                 v2SigningEnabled true
@@ -60,14 +42,9 @@ android {
     }
     // 빌드시 적용
     buildTypes {
-        debug {
-            if (keystorePassword != null) {
-                signingConfig signingConfigs.debug
-            }
-        }
         release {
             ...
-            if (keystorePassword != null) {
+            if (releasePassword != null) {
                 signingConfig signingConfigs.release
             }
         }
